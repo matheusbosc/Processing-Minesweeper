@@ -66,7 +66,6 @@ public class Grid
     {
       PVector bomb = getRandomUniqueVector(blacklist, new PVector(0,0), new PVector(columns - 1,rows - 1));
       tiles.get((int)bomb.x).get((int)bomb.y).bomb = true;
-      tiles.get((int)bomb.x).get((int)bomb.y).mined = true;
       blacklist.add(bomb);
     }
   }
