@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+/*import java.util.ArrayList;
 
 public class Tile
 {
@@ -36,7 +36,7 @@ public class Grid
    @param _firstCoordsX The X position of the top left corner of the grid
    @param _firstCoordsY The Y position of the top left corner of the grid
    
-   */
+   *//*
   public Grid(int _rows, int _columns, int _gridBoxSize, int _firstCoordsX, int _firstCoordsY)
   {
     rows = _rows;
@@ -251,4 +251,4 @@ void mouseClicked()
 
     if (breakLoop) break;
   }
-}
+}*/
