@@ -1,5 +1,6 @@
 /**
- * GameModule - Provides properties and methods for other modules to access
+ * GameModule:
+ * Provides properties and methods for other modules to access
  * @author  Matheus Boscariol
  * @version 13/05/2026
  */
