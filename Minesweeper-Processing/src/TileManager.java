@@ -36,8 +36,9 @@ public class TileManager extends PApplet implements GameModule {
         {
             for (int j = 0; j < tiles[i].length; j++)
             {
-                if (tiles[i][j] == null) tiles[i][j] = new Tile();
-                tiles[i][j].coordinate = new Vector(i+1,j+1);
+                var t = new Tile();
+                t.coordinate = new Vector(i+1,j+1);
+                tiles[i][j] = t;
             }
         }
 
@@ -64,12 +65,18 @@ public class TileManager extends PApplet implements GameModule {
             for (int j = 0; j < tiles[i].length; j++)
             {
                 tiles[i][j].bombsSurrounding = getSurroundingBombAmount(tiles[i][j]);
+            }
+        }
 
+        for (int i = 0; i < tiles.length; i++)
+        {
+            for (int j = 0; j < tiles[i].length; j++)
+            {
                 if (tiles[i][j].isBomb)
                 {
                     System.out.printf("[X]");
                 } else {
-                    System.out.printf("[%d]", tiles[i][j].bombsSurrounding);
+                    System.out.printf("[%d]", tiles[i][j].bombsSurrounding == 0 ? 0 : tiles[i][j].bombsSurrounding);
                 }
             }
 
@@ -94,6 +101,7 @@ public class TileManager extends PApplet implements GameModule {
 
         int bombCount = 0;
 
+
         for (int x = -1; x <= 1; x++)
         {
             for (int y = -1; y <= 1; y++)
@@ -103,22 +111,25 @@ public class TileManager extends PApplet implements GameModule {
                 int xPos = (int) tile.coordinate.x + x;
                 int yPos = (int) tile.coordinate.y + y;
 
+                System.out.printf("X = %d | Y = %d | GRIDX = %d | GRIDY = %d\n", xPos, yPos, (int) gridSize.x, (int) gridSize.y);
 
-
-                if (0 <= xPos && xPos < gridSize.y &&
-                    0 <= yPos && yPos < gridSize.x)
+                if ((0 <= xPos || xPos >= gridSize.x) &&
+                    (0 <= yPos || yPos >= gridSize.y))
                     continue;
 
-                print ("passed check");
+                print ("passed check\n");
 
-                var surroundingTile = tiles[xPos][yPos];
+                Tile surroundingTile = tiles[xPos][yPos];
 
                 if (surroundingTile.isBomb) {
-                    print("bombSurrounding");
+                    print("bombSurrounding\n");
                     bombCount++;
                 }
             }
         }
+
+
+        //if ()
 
         return bombCount;
     }
