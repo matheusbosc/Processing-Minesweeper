@@ -58,11 +58,70 @@ public class TileManager extends PApplet implements GameModule {
                 }
             } while (!bombSet);
         }
+
+        for (int i = 0; i < tiles.length; i++)
+        {
+            for (int j = 0; j < tiles[i].length; j++)
+            {
+                tiles[i][j].bombsSurrounding = getSurroundingBombAmount(tiles[i][j]);
+
+                if (tiles[i][j].isBomb)
+                {
+                    System.out.printf("[X]");
+                } else {
+                    System.out.printf("[%d]", tiles[i][j].bombsSurrounding);
+                }
+            }
+
+            print("\n");
+        }
     }
 
     public void onStop() {}
 
     public void onUpdate() {}
+
+    private int getSurroundingBombAmount(Tile tile)
+    {
+        /* ----
+            Checks the squares surrounding the one selected (X) for bombs and increases a counter.
+            Uses X & Y increments to get the surrounding squares.
+
+            [ ][ ][*]  * = xIncrement = 1, yIncrement = 1
+            [ ][X][ ]
+            [ ]["][ ]  " = xIncrement = 0, yIncrement = -1
+         */
+
+        int bombCount = 0;
+
+        for (int x = -1; x <= 1; x++)
+        {
+            for (int y = -1; y <= 1; y++)
+            {
+                if (x == 0 && y == 0) continue;
+
+                int xPos = (int) tile.coordinate.x + x;
+                int yPos = (int) tile.coordinate.y + y;
+
+
+
+                if (0 <= xPos && xPos < gridSize.y &&
+                    0 <= yPos && yPos < gridSize.x)
+                    continue;
+
+                print ("passed check");
+
+                var surroundingTile = tiles[xPos][yPos];
+
+                if (surroundingTile.isBomb) {
+                    print("bombSurrounding");
+                    bombCount++;
+                }
+            }
+        }
+
+        return bombCount;
+    }
 
     /**
      * Gives a reference to the tile

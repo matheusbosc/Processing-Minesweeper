@@ -12,4 +12,6 @@ public class Tile
     public Vector coordinate;
     public boolean isBomb = false;
     public boolean isFlagged = false;
+
+    public int bombsSurrounding;
 }
