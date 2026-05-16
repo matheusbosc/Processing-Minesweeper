@@ -6,7 +6,14 @@
  */
 
 public interface GameModule {
-    public void onStart(); // Actions to happen on the game start
-    public void onStop(); // Actions to happen on the game stop
-    public void onUpdate(); // Actions to happen on the game update (game loop)
+
+    /**
+     * Called once at the start of the game in the setup() method
+     */
+    public void onStart();
+
+    /**
+     * Called every frame in the draw() method (Game loop)
+     */
+    public void onUpdate();
 }
