@@ -18,15 +18,18 @@ public class TileManager implements GameModule {
 
     // Board config
     public final Vector gridSize; // The size of the board (amount of tiles X and Y)
-
+    int bombAmount = 10; // Number of bombs to use
+    int flagAmount = 0;
+    int correctAmount = 0;
 
 
     // Methods
 
-    public TileManager(Minesweeper _main, int _sizeX, int _sizeY) // Constructor
+    public TileManager(Minesweeper _main, int _sizeX, int _sizeY, int _bombs) // Constructor
     {
         main = _main;
         gridSize = new Vector((float) _sizeX, (float) _sizeY);
+        bombAmount = _bombs;
     }
 
     public void onStart()
@@ -34,7 +37,6 @@ public class TileManager implements GameModule {
         // Generate Grid
         tiles = new Tile[(int) gridSize.x][(int) gridSize.y]; // Initialize tiles array
 
-        int bombAmount = 10; // Number of bombs to use
         bombs = new Tile[bombAmount]; // Initialize list of bombs
 
         // Initialize tiles
@@ -168,10 +170,27 @@ public class TileManager implements GameModule {
         // Throw error if tile is out of bounds
         if (position.x >= tiles.length && position.y >= tiles[0].length) throw new IndexOutOfBoundsException("The tile provided is out of bounds of the tile list");
 
-        if (tiles[(int) position.x][(int) position.y].isShown) return; // Return if shown already
+        var tile = tiles[(int) position.x][(int) position.y];
+
+        if (tile.isShown) return; // Return if shown already
 
         // Toggle flagged state
-        tiles[(int) position.x][(int) position.y].isFlagged = !tiles[(int) position.x][(int) position.y].isFlagged;
+        if (tile.isFlagged)
+        {
+            tile.isFlagged = false;
+            flagAmount--;
+
+            if (tile.isBomb)
+                correctAmount--;
+        } else {
+            if (flagAmount >= bombAmount) return; // Dont let more flags than bombs be placed
+
+            tile.isFlagged = true;
+            flagAmount++;
+
+            if (tile.isBomb)
+                correctAmount++;
+        }
     }
 
     /**
