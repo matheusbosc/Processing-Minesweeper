@@ -1,6 +1,7 @@
 import Utilities.Grid;
 import Utilities.Vector;
 import processing.core.PApplet;
+import processing.core.PFont;
 import processing.core.PImage;
 
 import java.awt.*;
@@ -32,14 +33,7 @@ public class UIManager implements GameModule {
 
     ArrayList<Button> buttons;
 
-    // Colors
-    Color bgColor = new Color(0xA0804F);
-    Color gridColor = new Color(0x705E4E);
-    Color tileColor = new Color(0x67AF4C);
-    Color bombColor = new Color(0x292525);
-    Color flagColor = new Color(0xD14F4F);
-    Color clickedColor = new Color(0xC6A689);
-
+    PImage background;
     PImage restartIcon;
     PImage largeIcon;
     PImage smallIcon;
@@ -47,7 +41,10 @@ public class UIManager implements GameModule {
     PImage tileUnclicked, tileFlagged, tileBomb;
     PImage tileClick0, tileClick1, tileClick2, tileClick3, tileClick4, tileClick5, tileClick6, tileClick7, tileClick8;
 
-    PImage buttonLeft,  buttonRight, buttonInBetween;
+    PImage buttonLeft, buttonRight, buttonInBetween;
+    PImage flagIcon;
+
+    PFont font;
 
     // Methods
     public UIManager(Minesweeper _main) {
@@ -58,6 +55,8 @@ public class UIManager implements GameModule {
         screenSize = new Vector(main.width, main.height);
 
         // Load Images
+        background = main.loadImage("sprites/BG.png");
+
         tileUnclicked = main.loadImage("sprites/tileUnclicked.png");
         tileClick0 = main.loadImage("sprites/tileClick0.png");
         tileClick1 = main.loadImage("sprites/tileClick1.png");
@@ -75,6 +74,10 @@ public class UIManager implements GameModule {
         buttonRight = main.loadImage("sprites/buttonRight.png");
         buttonInBetween = main.loadImage("sprites/buttonInBetween.png");
 
+        flagIcon = main.loadImage("sprites/flagIcon.png");
+
+        font = main.createFont("fonts/Ithaca-LVB75.ttf", 128);
+
         int tileSize = (int) ((screenSize.x - (2 * gridOffset.x)) / main.tileManager.gridSize.y);
         grid = new Grid((int) gridOffset.x, (int) (gridOffset.x + tileSize * main.tileManager.gridSize.y), (int) gridOffset.y, (int) (gridOffset.y + tileSize * main.tileManager.gridSize.x));
         grid.tileSize = tileSize;
@@ -84,9 +87,11 @@ public class UIManager implements GameModule {
 
         uiStartY = (int) ((2 * gridOffset.y) + (main.tileManager.gridSize.y * tileSize));
 
+        var spaceInBetween = (screenSize.x - (2 * gridOffset.x)); // the space in between the 2 offsets on the x axis
+
         // Restart Button
         Button restartBtn = new Button("Restart", i -> i.restartGame(), buttonLeft, buttonInBetween, buttonRight);
-        restartBtn.position = new Vector(gridOffset.x, uiStartY);
+        restartBtn.position = new Vector(gridOffset.x, uiStartY + 70);
         restartBtn.size = new Vector(screenSize.x - (2 * gridOffset.x), 60);
         buttons.add(restartBtn);
 
@@ -95,8 +100,8 @@ public class UIManager implements GameModule {
             i.setBoardInfo(Boards.SMALL);
             i.restartGame();
         }, buttonLeft, buttonInBetween, buttonRight);
-        smallButton.position = new Vector(gridOffset.x, uiStartY + 70);
-        smallButton.size = new Vector((screenSize.x - (2 * gridOffset.x)) / 2 - 10, 60);
+        smallButton.position = new Vector(gridOffset.x, uiStartY);
+        smallButton.size = new Vector((spaceInBetween / 2) - 40, 60);
         buttons.add(smallButton);
 
         // Large Button
@@ -104,14 +109,28 @@ public class UIManager implements GameModule {
             i.setBoardInfo(Boards.MEDIUM);
             i.restartGame();
         }, buttonLeft, buttonInBetween, buttonRight);
-        largeButton.position = new Vector(gridOffset.x + ((screenSize.x - (gridOffset.x * 2)) / 2) + 10, uiStartY + 70);
-        largeButton.size = new Vector((screenSize.x - (2 * gridOffset.x)) / 2 - 10, 60);
+        largeButton.position = new Vector((spaceInBetween / 2) + 90, uiStartY);
+        largeButton.size = new Vector((spaceInBetween / 2) - 40, 60);
         buttons.add(largeButton);
+
+        // Flags Counter
+        Button flagCounter = new Button("10", i -> {
+        }, buttonLeft, buttonInBetween, buttonRight);
+        flagCounter.position = new Vector((screenSize.x / 2) - 40, uiStartY);
+        flagCounter.size = new Vector(80, 60);
+        flagCounter.name = "flagCounter";
+        buttons.add(flagCounter);
     }
 
     public void onUpdate() {
+        main.textFont(font);
 
-        main.background(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue());
+        // Draw BG
+        for (int currentX = 0; currentX < screenSize.x; currentX += 256) {
+            for (int currentY = 0; currentY < screenSize.y; currentY += 256) {
+                main.image(background, currentX, currentY, 256, 256);
+            }
+        }
 
         // Display Tiles
         main.rectMode(PApplet.CORNER);
@@ -162,25 +181,39 @@ public class UIManager implements GameModule {
             }
         }
 
-        // Draw Grid
-        if (drawGrid) {
-            main.strokeWeight(2);
-            main.stroke(gridColor.getRed(), gridColor.getGreen(), gridColor.getBlue());
-
-            for (int i = 0; i < grid.gridSize.y + 1; i++) // Vertical Lines
-            {
-                main.line((grid.tileSize * i) + grid.topLeftCoords.x, grid.topLeftCoords.y, (grid.tileSize * i) + grid.topLeftCoords.x, grid.bottomRightCoords.y);
-            }
-
-            for (int i = 0; i < grid.gridSize.x + 1; i++) // Horizontal Lines
-            {
-                main.line(grid.topLeftCoords.x, (grid.tileSize * i) + grid.topLeftCoords.y, grid.bottomRightCoords.x, (grid.tileSize * i) + grid.topLeftCoords.y);
-            }
-        }
-
         // Draw Buttons
         for (Button button : buttons) {
+            if (button.name.equals("flagCounter")) {
+                button.text = (main.tileManager.bombAmount - main.tileManager.flagAmount) + "";
+            }
+
             button.draw(main);
+        }
+
+        // Draw Game Over / Win Screen
+
+        // Game Over
+        if (isGameOver) {
+            main.rectMode(PApplet.CORNER);
+            main.fill(0, 0, 0, 170);
+            main.rect(gridOffset.x, gridOffset.y, grid.gridSize.x * grid.tileSize, grid.gridSize.y * grid.tileSize);
+
+            main.textSize(100);
+            main.textAlign(PApplet.CENTER, PApplet.CENTER);
+            main.fill(255);
+            main.text("Game Over", gridOffset.x, gridOffset.y, grid.gridSize.x * grid.tileSize, grid.gridSize.y * grid.tileSize);
+        }
+
+        if (main.tileManager.correctAmount == main.tileManager.bombAmount) {
+            main.rectMode(PApplet.CORNER);
+            main.fill(0, 0, 0, 170);
+            main.rect(gridOffset.x, gridOffset.y, grid.gridSize.x * grid.tileSize, grid.gridSize.y * grid.tileSize);
+            main.image(flagIcon, gridOffset.x, gridOffset.y, grid.gridSize.x * grid.tileSize, grid.gridSize.y * grid.tileSize);
+
+            main.textSize(100);
+            main.textAlign(PApplet.CENTER, PApplet.CENTER);
+            main.fill(255);
+            main.text("Game Won!", gridOffset.x, gridOffset.y, grid.gridSize.x * grid.tileSize, grid.gridSize.y * grid.tileSize);
         }
     }
 
@@ -195,6 +228,9 @@ public class UIManager implements GameModule {
         // TODO: Fix click bounds
         if (mX >= grid.topLeftCoords.x && mX <= grid.bottomRightCoords.x &&
                 mY >= grid.topLeftCoords.y && mY <= grid.bottomRightCoords.y && !isGameOver) {
+
+            if (main.tileManager.correctAmount == main.tileManager.bombAmount) return;
+
             var tile = main.tileManager.getTileInfo(new Vector((float) Math.floor((mY - grid.topLeftCoords.y) / grid.tileSize), (float) Math.floor((mX - grid.topLeftCoords.x) / grid.tileSize)));
 
             if (tile != null) {

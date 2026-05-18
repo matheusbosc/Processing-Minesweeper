@@ -47,7 +47,7 @@ public class Minesweeper extends PApplet {
     }
 
     public void settings() {
-        size(700, 900);
+        size(700, 850);
         noSmooth();
     }
 

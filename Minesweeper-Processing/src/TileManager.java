@@ -146,16 +146,21 @@ public class TileManager implements GameModule {
         // Throw error if tile is out of bounds
         if (position.x >= tiles.length && position.y >= tiles[0].length) throw new IndexOutOfBoundsException("The tile provided is out of bounds of the tile list");
 
-        tiles[(int) position.x][(int) position.y].isFlagged = false;
+        var tile = tiles[(int) position.x][(int) position.y];
 
-        if (tiles[(int) position.x][(int) position.y].isBomb) { // If is a bomb...
+        if (tile.isFlagged) return;
+
+        if (tile.isBomb) { // If is a bomb...
             // Do bomb things (lose game)
-            tiles[(int) position.x][(int) position.y].isShown = true;
+            for (var b : bombs)
+            {
+                b.isShown = true;
+            }
         }
         else {  // if is regular tile...
 
             // Start flood fill is it's not flagged
-            if (!tiles[(int) position.x][(int) position.y].isFlagged)
+            if (!tile.isFlagged)
                 floodFill(position);
         }
     }

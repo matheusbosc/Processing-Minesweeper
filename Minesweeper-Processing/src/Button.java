@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 
 public class Button implements UIElement {
     public Vector position = null, size = null;
-    public String name = null;
+    public String name = "btn";
 
     public Consumer<Minesweeper> onClick = null;
 
@@ -33,8 +33,9 @@ public class Button implements UIElement {
         ms.image(inBetween, position.x + size.y, position.y, size.x - (2 * size.y), size.y);
         ms.image(right, position.x + (size.x - size.y), position.y, size.y, size.y);
 
+        ms.textAlign(PApplet.CENTER, PApplet.CENTER);
         ms.fill(textColor.getRed(), textColor.getGreen(), textColor.getBlue());
         ms.textSize(40);
-        ms.text(text, position.x, position.y, position.x + (size.x), position.y + (size.y));
+        ms.text(text, position.x + (size.x / 2), position.y + (size.y / 2));
     }
 }

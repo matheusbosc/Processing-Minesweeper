@@ -3,7 +3,7 @@ import java.util.function.Consumer;
 
 public interface UIElement {
     Vector position = null, size = null;
-    String name = null;
+    String name = "";
 
     Consumer<Minesweeper> onClick = null;
 
