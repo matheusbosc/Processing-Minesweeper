@@ -204,6 +204,7 @@ public class UIManager implements GameModule {
             main.text("Game Over", gridOffset.x, gridOffset.y, grid.gridSize.x * grid.tileSize, grid.gridSize.y * grid.tileSize);
         }
 
+        // Has Won
         if (main.tileManager.correctAmount == main.tileManager.bombAmount) {
             main.rectMode(PApplet.CORNER);
             main.fill(0, 0, 0, 170);
@@ -253,6 +254,7 @@ public class UIManager implements GameModule {
         for (var button : buttons) {
             if (mX >= button.position.x && mX <= (button.position.x + button.size.x) &&
                     mY >= button.position.y && mY <= (button.position.y + button.size.y)) {
+                main.tileManager.clickSfx.play();
                 button.onClick.accept(main);
                 break;
             }

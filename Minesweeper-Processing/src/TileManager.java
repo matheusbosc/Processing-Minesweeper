@@ -1,5 +1,5 @@
 import Utilities.Vector;
-import processing.core.PApplet;
+import processing.sound.SoundFile;
 
 import java.util.ArrayList;
 
@@ -22,6 +22,9 @@ public class TileManager implements GameModule {
     int flagAmount = 0;
     int correctAmount = 0;
 
+    // SFX
+    SoundFile clickSfx, explosionSfx, flagSfx, winSfx;
+
 
     // Methods
 
@@ -34,6 +37,12 @@ public class TileManager implements GameModule {
 
     public void onStart()
     {
+        // Load Files
+        clickSfx = new SoundFile(main, "sfx/click.wav");
+        explosionSfx =  new SoundFile(main, "sfx/explosion.wav");
+        flagSfx = new SoundFile(main, "sfx/flag.wav");
+        winSfx = new SoundFile(main, "sfx/win.wav");
+
         // Generate Grid
         tiles = new Tile[(int) gridSize.x][(int) gridSize.y]; // Initialize tiles array
 
@@ -151,17 +160,24 @@ public class TileManager implements GameModule {
         if (tile.isFlagged) return;
 
         if (tile.isBomb) { // If is a bomb...
-            // Do bomb things (lose game)
+            explosionSfx.play();
+
             for (var b : bombs)
             {
                 b.isShown = true;
             }
         }
         else {  // if is regular tile...
+            clickSfx.play();
 
             // Start flood fill is it's not flagged
             if (!tile.isFlagged)
                 floodFill(position);
+        }
+
+        if (correctAmount == bombAmount)
+        {
+            winSfx.play();
         }
     }
 
@@ -179,6 +195,8 @@ public class TileManager implements GameModule {
 
         if (tile.isShown) return; // Return if shown already
 
+        flagSfx.play();
+
         // Toggle flagged state
         if (tile.isFlagged)
         {
@@ -195,6 +213,11 @@ public class TileManager implements GameModule {
 
             if (tile.isBomb)
                 correctAmount++;
+        }
+
+        if (correctAmount == bombAmount)
+        {
+            winSfx.play();
         }
     }
 
