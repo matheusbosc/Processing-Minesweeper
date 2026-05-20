@@ -10,19 +10,19 @@ import processing.core.PApplet;
  */
 public class Minesweeper extends PApplet {
 
-    /** Reference to the Tile Manager */
+    /// Reference to the Tile Manager
     public TileManager tileManager;
 
-    /** Reference to the UI Manager */
+    /// Reference to the UI Manager
     public UIManager uiManager;
 
-    /** Information about the board (size, bomb amount) */
+    /// Information about the board (size, bomb amount)
     private Boards boardInfo = Boards.SMALL;
 
-    /** Size of the grid (set by <code>boardInfo</code>) */
+    /// Size of the grid (set by <code>boardInfo</code>)
     private Vector gridSize;
 
-    /** Amount of bombs in the board (set by <code>boardInfo</code>) */
+    /// Amount of bombs in the board (set by <code>boardInfo</code>)
     private int bombs;
 
     /**
@@ -72,6 +72,10 @@ public class Minesweeper extends PApplet {
      * Method required by processing for configuring applet
      */
     public void settings() {
+        // Code in here is usually in the setup() method,
+        // but since im not using the processing ide, and IntelliJ instead,
+        // I need to put them in here
+
         size(700, 850);
         noSmooth();
     }
