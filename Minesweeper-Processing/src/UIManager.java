@@ -4,13 +4,7 @@ import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PImage;
 
-import java.awt.*;
 import java.util.ArrayList;
-
-//TODO: Add the UI buttons and settings
-//TODO: Add lose conditions
-//TODO: Add better textures
-//TODO: Add sounds
 
 /**
  * UIManager:
@@ -90,7 +84,7 @@ public class UIManager implements GameModule {
         var spaceInBetween = (screenSize.x - (2 * gridOffset.x)); // the space in between the 2 offsets on the x axis
 
         // Restart Button
-        Button restartBtn = new Button("Restart", i -> i.restartGame(), buttonLeft, buttonInBetween, buttonRight);
+        Button restartBtn = new Button("Restart", i -> i.startGame(), buttonLeft, buttonInBetween, buttonRight);
         restartBtn.position = new Vector(gridOffset.x, uiStartY + 70);
         restartBtn.size = new Vector(screenSize.x - (2 * gridOffset.x), 60);
         buttons.add(restartBtn);
@@ -98,7 +92,7 @@ public class UIManager implements GameModule {
         // Small Button
         Button smallButton = new Button("Small", i -> {
             i.setBoardInfo(Boards.SMALL);
-            i.restartGame();
+            i.startGame();
         }, buttonLeft, buttonInBetween, buttonRight);
         smallButton.position = new Vector(gridOffset.x, uiStartY);
         smallButton.size = new Vector((spaceInBetween / 2) - 40, 60);
@@ -107,7 +101,7 @@ public class UIManager implements GameModule {
         // Large Button
         Button largeButton = new Button("Large", i -> {
             i.setBoardInfo(Boards.MEDIUM);
-            i.restartGame();
+            i.startGame();
         }, buttonLeft, buttonInBetween, buttonRight);
         largeButton.position = new Vector((spaceInBetween / 2) + 90, uiStartY);
         largeButton.size = new Vector((spaceInBetween / 2) - 40, 60);

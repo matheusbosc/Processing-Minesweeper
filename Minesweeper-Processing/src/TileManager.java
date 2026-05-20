@@ -6,20 +6,26 @@ import java.util.ArrayList;
 /**
  * TileManager:
  * Manage the tiles, generates board, provides tile utilities
+ *
  * @author  Matheus Boscariol
  * @version 13/05/2026
  */
 public class TileManager implements GameModule {
 
-    // Variables
-    private Tile[][] tiles; // A matrix (2D array) of tiles | tiles[x][y]
-    private Tile[] bombs; // List of all the bombs in the board
+    /** A matrix (2D array) of tiles - tiles[x][y] */
+    private Tile[][] tiles;
+    /** List of all the bombs in the board */
+    private Tile[] bombs;
+    /** Reference to main processing file */
     Minesweeper main;
 
-    // Board config
-    public final Vector gridSize; // The size of the board (amount of tiles X and Y)
-    int bombAmount = 10; // Number of bombs to use
+    /** The size of the board (amount of tiles X and Y) */
+    public final Vector gridSize;
+    /** Number of bombs in the map */
+    int bombAmount = 10;
+    /** Number of flags placed */
     int flagAmount = 0;
+    /** Number of flags placed in the correct spots */
     int correctAmount = 0;
 
     // SFX
@@ -150,7 +156,7 @@ public class TileManager implements GameModule {
      * @return The type of the tile: Safe, Bomb, or Clicked
      * @throws IndexOutOfBoundsException If the tile is not inside the board
      */
-    public void clickTile(Vector position)
+    public void clickTile(Vector position) // TODO: tiles can be clicked if they're flagged
     {
         // Throw error if tile is out of bounds
         if (position.x >= tiles.length && position.y >= tiles[0].length) throw new IndexOutOfBoundsException("The tile provided is out of bounds of the tile list");
