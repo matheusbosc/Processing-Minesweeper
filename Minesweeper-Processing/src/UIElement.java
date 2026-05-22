@@ -1,4 +1,6 @@
 import Utilities.Vector;
+
+import java.util.ArrayList;
 import java.util.function.Consumer;
 
 /**
@@ -14,9 +16,12 @@ public interface UIElement {
     public Vector size = null;
     /// Name of the button (used for references)
     public String name = "";
+    /// List of buttons that the ui manager can use
+    public ArrayList<Button> buttons = null;
 
-    /// Function to call on click (passes in the main class, <code>{@link Minesweeper}</code>)
-    Consumer<Minesweeper> onClick = null;
-
+    /**
+     * Draws the ui element and is called every frame
+     * @param ms The main processing file
+     */
     void draw(Minesweeper ms);
 }

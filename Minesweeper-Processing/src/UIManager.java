@@ -22,6 +22,9 @@ public class UIManager implements GameModule {
     /// Pixel offset from the top left corner
     private Vector gridOffset = new Vector(50, 50);
 
+    /// Instance of the help menu
+    public HelpMenu helpMenu;
+
     /// How far down does the UI (Buttons, text, not the board itself) starts
     public int uiStartY = 0;
 
@@ -30,7 +33,7 @@ public class UIManager implements GameModule {
     /// Has the game been lost
     boolean isGameOver = false;
 
-    /// List of buttons
+    /// List of button instances
     ArrayList<Button> buttons;
 
     /// Background image
@@ -45,6 +48,9 @@ public class UIManager implements GameModule {
     PImage buttonLeft, buttonRight, buttonInBetween;
     /// Flag icon
     PImage flagIcon;
+
+    /// Help icon
+    PImage helpIcon;
 
     /// Game font
     PFont font;
@@ -79,12 +85,13 @@ public class UIManager implements GameModule {
         buttonRight = main.loadImage("sprites/buttonRight.png");
         buttonInBetween = main.loadImage("sprites/buttonInBetween.png");
 
+        helpIcon = main.loadImage("sprites/helpIcon.png");
+
         // Flag icon
         flagIcon = main.loadImage("sprites/flagIcon.png");
 
         // Font
         font = main.createFont("fonts/Ithaca-LVB75.ttf", 128);
-
 
         int tileSize = (int) ((screenSize.x - (2 * gridOffset.x)) / main.tileManager.gridSize.y); // Calculate tile size
 
@@ -95,6 +102,9 @@ public class UIManager implements GameModule {
 
         // Initialize button array
         buttons = new ArrayList<>();
+
+        // Initialize the help menu
+        helpMenu = new HelpMenu(main, new Vector(gridOffset.x + 20, gridOffset.y + 20), new Vector((grid.gridSize.x * grid.tileSize) - 40, (grid.gridSize.y * grid.tileSize) - 40));
 
         // Calculate UI start
         uiStartY = (int) ((2 * gridOffset.y) + (main.tileManager.gridSize.y * tileSize));
@@ -132,6 +142,13 @@ public class UIManager implements GameModule {
         flagCounter.size = new Vector(80, 60);
         flagCounter.name = "flagCounter";
         buttons.add(flagCounter);
+
+        // Help button
+        Button helpBtn;
+        helpBtn = new Button("", i -> helpMenu.isActive = true, helpIcon);
+        helpBtn.position = new Vector(screenSize.x - tileSize + 5,  5);
+        helpBtn.size = new Vector(tileSize - 10, tileSize - 10);
+        buttons.add(helpBtn);
     }
 
     public void onUpdate() {
@@ -220,6 +237,9 @@ public class UIManager implements GameModule {
             main.fill(255);
             main.text("Game Won!", gridOffset.x, gridOffset.y, grid.gridSize.x * grid.tileSize, grid.gridSize.y * grid.tileSize);
         }
+
+        // Draw help menu if its active
+        helpMenu.draw(main);
     }
 
     /**
@@ -229,9 +249,9 @@ public class UIManager implements GameModule {
      * @param mY The Y mouse position when clicked
      */
     public void onClick(int mX, int mY) {
-        // Is within grid...
+        // Is within grid && Help menu isnt shown...
         if (mX >= grid.topLeftCoords.x && mX <= grid.bottomRightCoords.x &&
-                mY >= grid.topLeftCoords.y && mY <= grid.bottomRightCoords.y && !isGameOver) {
+                mY >= grid.topLeftCoords.y && mY <= grid.bottomRightCoords.y && !isGameOver && !helpMenu.isActive) {
 
             // Return if the player has won
             if (main.tileManager.correctAmount == main.tileManager.bombAmount) return;
@@ -259,6 +279,16 @@ public class UIManager implements GameModule {
 
         // Call onClick for the first button that is inside the bounds
         for (var button : buttons) {
+            if (mX >= button.position.x && mX <= (button.position.x + button.size.x) &&
+                    mY >= button.position.y && mY <= (button.position.y + button.size.y)) {
+                main.tileManager.clickSfx.play();
+                button.onClick.accept(main);
+                break;
+            }
+        }
+
+        // Call onClick for the first button that is inside the bounds thats part of the helpMenu
+        for (var button : helpMenu.buttons) {
             if (mX >= button.position.x && mX <= (button.position.x + button.size.x) &&
                     mY >= button.position.y && mY <= (button.position.y + button.size.y)) {
                 main.tileManager.clickSfx.play();
